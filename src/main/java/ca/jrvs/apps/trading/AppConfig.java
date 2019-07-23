@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 @EnableTransactionManagement
 public class AppConfig {
 
-    private Logger logger = LoggerFactory.getLogger(AppConfig.class);
+    //private Logger logger = LoggerFactory.getLogger(AppConfig.class);
 
     @Value("${iex.host}")
     private String iex_host;
