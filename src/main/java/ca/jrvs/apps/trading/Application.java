@@ -35,7 +35,7 @@ public class Application implements CommandLineRunner {
     //@Autowired
     //private QuoteService quoteService;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         SpringApplication app = new SpringApplication(Application.class);
         //turn off web
         //app.setWebApplicationType(WebApplicationType.NONE);
@@ -43,7 +43,7 @@ public class Application implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
       //  quoteService.initQuotes(Arrays.asList(initDailyList));
       //  quoteService.updateMarketData();
     }

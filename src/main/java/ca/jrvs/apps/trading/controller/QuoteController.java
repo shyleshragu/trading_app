@@ -85,7 +85,7 @@ public class QuoteController {
     @GetMapping(path = "/iex/ticker/{ticker}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public IexQuote getQuote(@PathVariable String ticker) throws MarketDataDao.NotAuthorizedException, MarketDataDao.ResourceNotFoundException {
+    public IexQuote getQuote(@PathVariable String ticker) {
         try {
             return marketDataDao.findIexQuoteByTicker(ticker);
         } catch (Exception e) {

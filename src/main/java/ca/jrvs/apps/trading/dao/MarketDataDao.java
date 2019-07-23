@@ -16,7 +16,6 @@ import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,11 +31,11 @@ public class MarketDataDao {
     private final String QUOTE_URL;
     private HttpClientConnectionManager httpClientConnectionManager;
 
-    //public MarketDataDao(HttpClientConnectionManager httpClientConnectionManager, MarketDataConfig marketDataConfig){
-    public MarketDataDao(HttpClientConnectionManager httpClientConnectionManager){
+    public MarketDataDao(HttpClientConnectionManager httpClientConnectionManager, MarketDataConfig marketDataConfig){
+    //public MarketDataDao(HttpClientConnectionManager httpClientConnectionManager){
         this.httpClientConnectionManager = httpClientConnectionManager;
-    //    QUOTE_URL = marketDataConfig.getHost() + "/stock/market/batch?symbols=%s&types=quote&token=" + marketDataConfig.getToken();
-        QUOTE_URL = "https://cloud.iexapis.com/stable/stock/market/batch?symbols=%s&types=quote&token=" + System.getenv("IEX_PUB_TOKEN");
+        QUOTE_URL = marketDataConfig.getHost() + "/stock/market/batch?symbols=%s&types=quote&token=" + marketDataConfig.getToken();
+    //    QUOTE_URL = "https://cloud.iexapis.com/stable/stock/market/batch?symbols=%s&types=quote&token=" + System.getenv("IEX_PUB_TOKEN");
     }
 
 
@@ -46,6 +45,7 @@ public class MarketDataDao {
 
         String tick = String.join(",", batchSymbols);
         String url = String.format(QUOTE_URL, tick);
+        logger.info("Get url: " + url);
 
         String response = responseexcute(url);
 
@@ -78,7 +78,7 @@ public class MarketDataDao {
         return quotes.get(0);
     }
 
-    private String responseexcute(String url) throws NotAuthorizedException, ResourceNotFoundException {
+    private String responseexcute(String url) {
         try (CloseableHttpClient httpClient = getHttpClient()){
             HttpGet httpGet = new HttpGet(url);
             CloseableHttpResponse response = httpClient.execute(httpGet);
@@ -112,20 +112,6 @@ public class MarketDataDao {
      return HttpClients.custom().setConnectionManager(httpClientConnectionManager).setConnectionManagerShared(true).build();
     }
 
-    /**
-     * Exceptions are made as the exception directories could not be found
-     */
-    public class NotAuthorizedException extends Throwable {
-        public NotAuthorizedException(String unauthorized) {
-            super(unauthorized);
-        }
-    }
-
-    public class ResourceNotFoundException extends Throwable {
-        public ResourceNotFoundException(String message) {
-            super(message);
-        }
-    }
 }
 
 

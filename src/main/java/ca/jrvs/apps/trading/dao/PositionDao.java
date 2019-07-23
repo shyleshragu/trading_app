@@ -1,5 +1,4 @@
 package ca.jrvs.apps.trading.dao;
 
-public class QuoteDao {
-
+public class PositionDao {
 }
