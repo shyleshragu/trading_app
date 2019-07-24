@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -21,6 +22,8 @@ public class QuoteDao extends JdbcCrudDao<Quote, String>{
 
     private final static String sqlSelect = "SELECT * FROM ";
     private final static String sqlWhere = "WHERE ID = ?";
+    private final static String sqlUpdate = "UPDATE ";
+
 
     private final static String TABLE_NAME = "quote";
     private final static String ID_NAME = "ticker";
@@ -78,16 +81,22 @@ public class QuoteDao extends JdbcCrudDao<Quote, String>{
     }
 
     @Override
-    public boolean existsById(String s) {
-        return super.existsById(s);
+    public boolean existsById(String id) {
+        return super.existsById(id);
     }
 
     @Override
-    public void deleteById(String s) {
-        super.deleteById(s);
+    public void deleteById(String id) {
+        super.deleteById(id);
     }
 
     public void update(List<Quote> singletonList) {
+        String query = sqlUpdate + TABLE_NAME + "SET last_price=?, bid_price=?, bid_size=?, ask_price=?, ask_size=? WHERE ticker=?";
+        int row = jdbcTemplate.update(query, singletonList, getIdName());
+        logger.debug("Update quote rows= ", row);
+        if (row != 1){
+            throw new IncorrectResultSizeDataAccessException(1, row);
+        }
     }
 
     public List<Quote> findAll() {
