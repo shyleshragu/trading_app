@@ -40,7 +40,7 @@ public class QuoteController {
         this.marketDataDao = marketDataDao;
     }
 
-    /*@PutMapping(path = "/iexMarketData")
+    @PutMapping(path = "/iexMarketData")
     @ResponseStatus(HttpStatus.OK)
     public void updateMarketData() {
         try {
@@ -80,7 +80,7 @@ public class QuoteController {
         } catch (Exception e) {
             throw ResponseExceptionUtil.getResponseStatusException(e);
         }
-    }*/
+    }
 
     @GetMapping(path = "/iex/ticker/{ticker}")
     @ResponseStatus(HttpStatus.OK)
