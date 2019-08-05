@@ -60,7 +60,7 @@ public class RegisterService {
      * @throws IllegalArgumentException for invalid input
      */
     public void deleteTraderById(Integer traderId) {
-        return null;
+
     }
 
 }

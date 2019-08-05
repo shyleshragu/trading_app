@@ -4,6 +4,8 @@ import ca.jrvs.apps.trading.dao.AccountDao;
 import ca.jrvs.apps.trading.dao.PositionDao;
 import ca.jrvs.apps.trading.dao.QuoteDao;
 import ca.jrvs.apps.trading.dao.TraderDao;
+import ca.jrvs.apps.trading.model.view.PortfolioView;
+import ca.jrvs.apps.trading.model.view.TraderAccountView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
