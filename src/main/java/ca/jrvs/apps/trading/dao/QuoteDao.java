@@ -4,7 +4,6 @@ import ca.jrvs.apps.trading.model.domain.Quote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -92,16 +91,16 @@ public class QuoteDao extends JdbcCrudDao<Quote, String>{
         super.deleteById(id);
     }
 
-    public void update(List<Quote> singletonList) {
+    public void update(List<Quote> quotes) {
         String query = sqlUpdate + TABLE_NAME + "SET last_price=?, bid_price=?, bid_size=?, ask_price=?, ask_size=? WHERE ticker=?";
-        List<Quote> quotes = findAll();
+        //List<Quote> quotes1 = findAll();
 
         List<Object[]> batch = new ArrayList<>();
         quotes.forEach(quote -> {
             if (!existsById(quote.getTicker())){
                 throw new ResourceNotFoundException("ticker not found: " + quote.getTicker());
             }
-            Object[] valies = new Object[]{
+            Object[] values = new Object[]{
                     quote.getLastPrice(), quote.getBidPrice(), quote.getAskPrice(), quote.getAskSize(), quote.getTicker()
             };
             batch.add(values);
@@ -110,19 +109,14 @@ public class QuoteDao extends JdbcCrudDao<Quote, String>{
         int totalRow = Arrays.stream(rows).sum();
         if (totalRow != quotes.size())
             throw new IncorrectResultSizeDataAccessException("Number of rows ", quotes.size(), totalRow);
-
     }
 
-    public List<Quote> findAll() {
+
+
+    public List<Quote> findAll(){
         String selectSql = sqlSelect + TABLE_NAME;
-        List<Quote> quotes = jdbcTemplate.query(selectSql, BeanPropertyRowMapper.newInstance(Quote.class));
-        return quotes;
+        List<Quote> quoteslist = jdbcTemplate.query(selectSql, BeanPropertyRowMapper.newInstance(Quote.class));
+        return quoteslist;
     }
-
-
-
-
-
-
 
 }
