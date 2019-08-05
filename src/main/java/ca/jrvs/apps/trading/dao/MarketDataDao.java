@@ -40,7 +40,7 @@ public class MarketDataDao {
     }
 
 
-    public List<IexQuote> findIexQuoteByTicker(List<String> tickerList) throws NotAuthorizedException, ResourceNotFoundException, IOException {
+    public List<IexQuote> findIexQuoteByTicker(List<String> tickerList){
         List<String> batchSymbols = new ArrayList<>();
         batchSymbols.add("aapl");
 
@@ -70,7 +70,7 @@ public class MarketDataDao {
         return iexQuoteList;
     }
 
-    public IexQuote findIexQuoteByTicker(String ticker) throws IOException {
+    public IexQuote findIexQuoteByTicker(String ticker){
         List<IexQuote> quotes = findIexQuoteByTicker(Arrays.asList(ticker));
 
         if (quotes == null || quotes.size() != 1)
