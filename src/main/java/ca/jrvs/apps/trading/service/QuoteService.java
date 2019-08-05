@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -89,7 +91,7 @@ public class QuoteService {
      * @throws org.springframework.dao.DataAccessException if unable to retrieve data
      * @throws IllegalArgumentException for invalid input
      */
-    public void updateMarketData(){
+    public void updateMarketData() throws IOException {
         List<Quote> quotes = quoteDao.findAll();
         List<String> tickers = quotes.stream().map(Quote::getTicker).collect(Collectors.toList());
         List<IexQuote> iexQuotes = marketDataDao.findIexQuoteByTicker(tickers);

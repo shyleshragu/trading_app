@@ -3,6 +3,7 @@ package ca.jrvs.apps.trading.dao;
 
 import ca.jrvs.apps.trading.model.config.MarketDataConfig;
 import ca.jrvs.apps.trading.model.domain.IexQuote;
+import ca.jrvs.apps.trading.util.JsonUtil;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.HttpClientConnectionManager;
@@ -49,27 +50,27 @@ public class MarketDataDao {
 
         String response = responseexcute(url);
 
-        JSONObject iexQuotesJson = new JSONObject();
+        JSONObject iexQuotesJson = new JSONObject(response);
         if (iexQuotesJson.length() == 0)
             throw new ResourceNotFoundException("Not found");
-        else if (iexQuotesJson.length() != tickerList.size())
+        if (iexQuotesJson.length() != tickerList.size())
             throw new IllegalArgumentException("Invalid ticker/symbol");
 
         //Unmarshal JSON object
         List<IexQuote> iexQuoteList = new ArrayList<>();
-        iexQuotesJson.keys().forEachRemaining((ticker -> {
+        iexQuotesJson.keys().forEachRemaining(ticker -> {
             try {
                 String qtstr = ((JSONObject) iexQuotesJson.get(ticker)).get("quote").toString();
-                IexQuote iexQuote = toObjectFromJson(qtstr, IexQuote.class);
+                IexQuote iexQuote = JsonUtil.toObjectFromJson(qtstr, IexQuote.class);
                 iexQuoteList.add(iexQuote);
             } catch (IOException e) {
                 throw new DataRetrievalFailureException("Unable to parse response: " + iexQuotesJson.get(ticker), e);
             }
-        }));
+        });
         return iexQuoteList;
     }
 
-    public IexQuote findIexQuoteByTicker(String ticker) throws NotAuthorizedException, ResourceNotFoundException, IOException {
+    public IexQuote findIexQuoteByTicker(String ticker) throws IOException {
         List<IexQuote> quotes = findIexQuoteByTicker(Arrays.asList(ticker));
 
         if (quotes == null || quotes.size() != 1)
