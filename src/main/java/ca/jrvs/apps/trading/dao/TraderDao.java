@@ -4,7 +4,11 @@ import ca.jrvs.apps.trading.model.domain.Trader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -28,12 +32,26 @@ public class TraderDao implements CrudRepository<Trader, Integer>{
 
     @Override
     public Trader save(Trader entity) {
-        return null;
+        SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(entity);
+        Number newId = simpleInsert.executeAndReturnKey(parameterSource);
+        entity.setId(newId.intValue());
+        return entity;
     }
 
     @Override
     public Trader findById(Integer integer) {
-        return null;
+        if (integer == null) {
+            throw new IllegalArgumentException("ID can't be null");
+        }
+        Trader trader = null;
+        try {
+            trader = jdbcTemplate
+                    .queryForObject("select * from " + TABLE_NAME + " where id = ?",
+                            BeanPropertyRowMapper.newInstance(Trader.class), integer);
+        } catch (EmptyResultDataAccessException e) {
+            logger.debug("Can't find trader id:" + integer, e);
+        }
+        return trader;
     }
 
     @Override
