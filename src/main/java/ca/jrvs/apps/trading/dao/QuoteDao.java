@@ -72,7 +72,7 @@ public class QuoteDao extends JdbcCrudDao<Quote, String>{
     }
 
 
-    public Quote findById(String id) {
+    /*public Quote findById(String id) {
         return super.findById("trader_id", id, false, getEntityClass());
     }
 
@@ -89,7 +89,7 @@ public class QuoteDao extends JdbcCrudDao<Quote, String>{
     @Override
     public void deleteById(String id) {
         super.deleteById(id);
-    }
+    }*/
 
     public void update(List<Quote> quotes) {
         String query = sqlUpdate + TABLE_NAME + "SET last_price=?, bid_price=?, bid_size=?, ask_price=?, ask_size=? WHERE ticker=?";
@@ -110,7 +110,6 @@ public class QuoteDao extends JdbcCrudDao<Quote, String>{
         if (totalRow != quotes.size())
             throw new IncorrectResultSizeDataAccessException("Number of rows ", quotes.size(), totalRow);
     }
-
 
 
     public List<Quote> findAll(){

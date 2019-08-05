@@ -21,7 +21,7 @@ public abstract class JdbcCrudDao<E extends Entity, ID> implements CrudRepositor
 
 
     /*.................................save..........................................*/
-    @SuppressWarnings("Uncheckeed")
+    @SuppressWarnings("Unchecked")
     @Override
     public E save(E entity) {
         SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(entity);
