@@ -44,7 +44,7 @@ public class Application implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) {
+    public void run(String... args) throws IOException {
         quoteService.initQuotes(Arrays.asList(initDailyList));
         quoteService.updateMarketData();
     }
