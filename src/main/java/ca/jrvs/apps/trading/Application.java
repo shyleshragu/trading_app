@@ -2,6 +2,7 @@ package ca.jrvs.apps.trading;
 
 import ca.jrvs.apps.trading.dao.MarketDataDao;
 import ca.jrvs.apps.trading.model.config.MarketDataConfig;
+import ca.jrvs.apps.trading.service.QuoteService;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.slf4j.Logger;
@@ -32,10 +33,10 @@ public class Application implements CommandLineRunner {
     @Value("aapl, msft, amzn, fb")
     private String[] initDailyList;
 
-    //@Autowired
-    //private QuoteService quoteService;
+    @Autowired
+    private QuoteService quoteService;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         SpringApplication app = new SpringApplication(Application.class);
         //turn off web
         //app.setWebApplicationType(WebApplicationType.NONE);
@@ -44,8 +45,8 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-      //  quoteService.initQuotes(Arrays.asList(initDailyList));
-      //  quoteService.updateMarketData();
+        quoteService.initQuotes(Arrays.asList(initDailyList));
+        quoteService.updateMarketData();
     }
 
 }

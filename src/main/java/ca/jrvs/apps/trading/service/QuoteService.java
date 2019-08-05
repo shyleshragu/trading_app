@@ -4,14 +4,23 @@ import ca.jrvs.apps.trading.dao.MarketDataDao;
 import ca.jrvs.apps.trading.dao.QuoteDao;
 import ca.jrvs.apps.trading.model.domain.IexQuote;
 import ca.jrvs.apps.trading.model.domain.Quote;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+@Transactional
+@Service
 public class QuoteService {
 
     private QuoteDao quoteDao;
     private MarketDataDao marketDataDao;
 
+    @Autowired
     public QuoteService(QuoteDao quoteDao, MarketDataDao marketDataDao) {
         this.quoteDao = quoteDao;
         this.marketDataDao = marketDataDao;
@@ -23,7 +32,17 @@ public class QuoteService {
      * Make sure set a default value for number field(s).
      */
     public static Quote buildQuoteFromIexQuote(IexQuote iexQuote){
-        return null;
+        Quote quote = new Quote();
+        quote.setTicker(iexQuote.getSymbol());
+        quote.setLastPrice(
+                Double.parseDouble(Optional.ofNullable(iexQuote.getLatestPrice()).orElse("0")));
+        quote.setAskPrice(
+                Double.parseDouble(Optional.ofNullable(iexQuote.getIexAskPrice()).orElse("0")));
+        quote.setBidPrice(
+                Double.parseDouble(Optional.ofNullable(iexQuote.getIexBidPrice()).orElse("0")));
+        quote.setBidSize(Integer.parseInt(Optional.ofNullable(iexQuote.getIexBidSize()).orElse("0")));
+        quote.setAskSize(Integer.parseInt(Optional.ofNullable(iexQuote.getIexAskSize()).orElse("0")));
+        return quote;
     }
 
     /**
@@ -37,7 +56,16 @@ public class QuoteService {
      * @throws IllegalArgumentException for invalid input
      */
     public void initQuotes(List<String> tickers){
+        List<IexQuote> securityList = tickers.stream().map(marketDataDao::findIexQuoteByTicker)
+                .collect(Collectors.toList());
+        List<Quote> quotes = securityList.stream().map(QuoteService::buildQuoteFromIexQuote)
+                .collect(Collectors.toList());
 
+        quotes.forEach(quote -> {
+            if (!quoteDao.existsById(quote.getId())) {
+                quoteDao.save(quote);
+            }
+        });
     }
 
     /**
@@ -48,7 +76,7 @@ public class QuoteService {
      * @throws IllegalArgumentException for invalid input
      */
     public void initQuote(String ticker){
-
+        initQuotes(Collections.singletonList(ticker));
     }
 
     /**
@@ -62,6 +90,11 @@ public class QuoteService {
      * @throws IllegalArgumentException for invalid input
      */
     public void updateMarketData(){
-
+        List<Quote> quotes = quoteDao.findAll();
+        List<String> tickers = quotes.stream().map(Quote::getTicker).collect(Collectors.toList());
+        List<IexQuote> iexQuotes = marketDataDao.findIexQuoteByTicker(tickers);
+        List<Quote> updateQuotes = iexQuotes.stream().map(QuoteService::buildQuoteFromIexQuote)
+                .collect(Collectors.toList());
+        quoteDao.update(updateQuotes);
     }
 }

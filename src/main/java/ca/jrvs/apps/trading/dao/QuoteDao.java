@@ -14,6 +14,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Repository
@@ -92,15 +94,29 @@ public class QuoteDao extends JdbcCrudDao<Quote, String>{
 
     public void update(List<Quote> singletonList) {
         String query = sqlUpdate + TABLE_NAME + "SET last_price=?, bid_price=?, bid_size=?, ask_price=?, ask_size=? WHERE ticker=?";
-        int row = jdbcTemplate.update(query, singletonList, getIdName());
-        logger.debug("Update quote rows= ", row);
-        if (row != 1){
-            throw new IncorrectResultSizeDataAccessException(1, row);
-        }
+        List<Quote> quotes = findAll();
+
+        List<Object[]> batch = new ArrayList<>();
+        quotes.forEach(quote -> {
+            if (!existsById(quote.getTicker())){
+                throw new ResourceNotFoundException("ticker not found: " + quote.getTicker());
+            }
+            Object[] valies = new Object[]{
+                    quote.getLastPrice(), quote.getBidPrice(), quote.getAskPrice(), quote.getAskSize(), quote.getTicker()
+            };
+            batch.add(values);
+        });
+        int[] rows = jdbcTemplate.batchUpdate(query, batch);
+        int totalRow = Arrays.stream(rows).sum();
+        if (totalRow != quotes.size())
+            throw new IncorrectResultSizeDataAccessException("Number of rows ", quotes.size(), totalRow);
+
     }
 
     public List<Quote> findAll() {
-        return null;
+        String selectSql = sqlSelect + TABLE_NAME;
+        List<Quote> quotes = jdbcTemplate.query(selectSql, BeanPropertyRowMapper.newInstance(Quote.class));
+        return quotes;
     }
 
 
