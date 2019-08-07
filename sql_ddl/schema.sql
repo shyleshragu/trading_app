@@ -1,13 +1,13 @@
 -- psql -h PSQL_HOST -p 5432 -U postgres jrvstrading -f schema.sql
 -- Drop table
 
-DROP TABLE IF EXISTS public.trader cascade;
-DROP TABLE IF EXISTS public.account cascade;
-DROP TABLE IF EXISTS public.security_order cascade;
-DROP TABLE IF EXISTS public.quote cascade;
+drop table IF EXISTS public.trader cascade;
+drop table IF EXISTS public.account cascade;
+drop table IF EXISTS public.security_order cascade;
+drop table IF EXISTS public.quote cascade;
 
 -- DO NOT use double quote, e.g. public.trader."trader"
-CREATE TABLE public.trader
+create TABLE public.trader
 (
   id         serial  NOT NULL,
   first_name varchar NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE public.trader
   CONSTRAINT trader_pk PRIMARY KEY (id)
 );
 
-CREATE TABLE public.account
+create TABLE public.account
 (
   id        serial NOT NULL,
   trader_id int4   NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE public.account
   CONSTRAINT account_trader_fk FOREIGN KEY (trader_id) REFERENCES trader (id)
 );
 
-CREATE TABLE public.quote
+create TABLE public.quote
 (
   ticker     varchar NOT NULL,
   last_price float8  NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE public.quote
   CONSTRAINT quote_pk PRIMARY KEY (ticker)
 );
 
-CREATE TABLE public.security_order
+create TABLE public.security_order
 (
   id         serial  NOT NULL,
   account_id int4    NOT NULL,
@@ -53,13 +53,13 @@ CREATE TABLE public.security_order
 );
 
 
-DROP VIEW IF EXISTS public.position;
+drop view IF EXISTS public.position;
 
-CREATE OR REPLACE VIEW public.position
-AS
-SELECT account_id,
+create or replace view public.position
+as
+select account_id,
        ticker,
        sum(size) AS position
 FROM public.security_order
-WHERE status = 'FILLED'
-GROUP BY account_id, ticker;
+where status = 'FILLED'
+group by account_id, ticker;

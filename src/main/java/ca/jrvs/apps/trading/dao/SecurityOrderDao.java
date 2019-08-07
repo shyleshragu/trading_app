@@ -8,9 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.Resource;
 import javax.sql.DataSource;
-import javax.xml.crypto.Data;
 
 @Repository
 public class SecurityOrderDao extends JdbcCrudDao<SecurityOrder, Integer> {
@@ -49,7 +47,7 @@ public class SecurityOrderDao extends JdbcCrudDao<SecurityOrder, Integer> {
     }
 
     @Override
-    Class getEntityClass(){
+    Class getEntityClass() {
         return SecurityOrder.class;
     }
 

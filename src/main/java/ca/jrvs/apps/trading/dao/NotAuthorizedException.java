@@ -6,11 +6,11 @@ package ca.jrvs.apps.trading.dao;
  */
 public class NotAuthorizedException extends RuntimeException {
 
-    public NotAuthorizedException(String msg){
+    public NotAuthorizedException(String msg) {
         super(msg);
     }
 
-    public NotAuthorizedException(String msg, Exception ex){
+    public NotAuthorizedException(String msg, Exception ex) {
         super(msg, ex);
     }
 }

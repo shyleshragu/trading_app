@@ -2,7 +2,6 @@ package ca.jrvs.apps.trading;
 
 import ca.jrvs.apps.trading.model.config.MarketDataConfig;
 import ca.jrvs.apps.trading.util.StringUtil;
-import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -14,6 +13,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.sql.DataSource;
 
 @Configuration
 @EnableTransactionManagement
@@ -55,8 +56,7 @@ public class AppConfig {
             jdbcUrl = "jdbc:postgresql://" + System.getenv("RDS_HOSTNAME") + ":" + System.getenv("RDS_PORT") + "/jrvstrading";
             user = System.getenv("RDS_USERNAME");
             password = System.getenv("RDS_PASSWORD");
-        }
-        else {
+        } else {
             jdbcUrl = System.getenv("PSQL_URL");
             user = System.getenv("PSQL_USER");
             password = System.getenv("PSQL_PASSWORD");

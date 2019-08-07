@@ -6,11 +6,11 @@ package ca.jrvs.apps.trading.dao;
  */
 public class AccessDeniedException extends RuntimeException {
 
-    public AccessDeniedException(String msg){
+    public AccessDeniedException(String msg) {
         super(msg);
     }
 
-    public AccessDeniedException(String msg, Exception ex){
+    public AccessDeniedException(String msg, Exception ex) {
         super(msg, ex);
     }
 }

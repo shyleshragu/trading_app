@@ -5,14 +5,11 @@ import ca.jrvs.apps.trading.model.domain.Account;
 import ca.jrvs.apps.trading.model.domain.Position;
 import ca.jrvs.apps.trading.model.domain.Trader;
 import ca.jrvs.apps.trading.model.view.TraderAccountView;
-import ca.jrvs.apps.trading.util.StringUtil;
-import java.lang.reflect.Parameter;
-import java.util.List;
-
-import org.apache.tomcat.util.http.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class RegisterService {
@@ -41,8 +38,8 @@ public class RegisterService {
      * @param trader trader info
      * @return traderAccountView
      * @throws ca.jrvs.apps.trading.dao.ResourceNotFoundException if ticker is not found from IEX
-     * @throws org.springframework.dao.DataAccessException if unable to retrieve data
-     * @throws IllegalArgumentException for invalid input
+     * @throws org.springframework.dao.DataAccessException        if unable to retrieve data
+     * @throws IllegalArgumentException                           for invalid input
      */
     public TraderAccountView createTraderAndAccount(Trader trader) {
         if (trader == null)
@@ -63,7 +60,7 @@ public class RegisterService {
             traderAccountView = new TraderAccountView();
             traderAccountView.setTrader(newTrader);
             traderAccountView.setAccount(account);
-        } catch (DataAccessException e){
+        } catch (DataAccessException e) {
             throw new ResourceNotFoundException("Create trader failure", e);
         }
 
@@ -79,8 +76,8 @@ public class RegisterService {
      *
      * @param traderId
      * @throws ca.jrvs.apps.trading.dao.ResourceNotFoundException if ticker is not found from IEX
-     * @throws org.springframework.dao.DataAccessException if unable to retrieve data
-     * @throws IllegalArgumentException for invalid input
+     * @throws org.springframework.dao.DataAccessException        if unable to retrieve data
+     * @throws IllegalArgumentException                           for invalid input
      */
     public void deleteTraderById(Integer traderId) {
         if (traderId == null)

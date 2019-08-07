@@ -2,6 +2,7 @@ package ca.jrvs.apps.trading.model.view;
 
 import ca.jrvs.apps.trading.model.domain.Position;
 import ca.jrvs.apps.trading.model.domain.Quote;
+
 import java.util.List;
 
 public class PortfolioView {

@@ -1,6 +1,6 @@
-CREATE DATABASE jrvstrading;
-GRANT ALL PRIVILEGES ON DATABASE jrvstrading TO postgres;
+create DATABASE jrvstrading;
+grant all privileges on DATABASE jrvstrading TO postgres;
 
 --db for test case
-CREATE DATABASE jrvstrading_test;
-GRANT ALL PRIVILEGES ON DATABASE jrvstrading_test TO postgres;
+create DATABASE jrvstrading_test;
+grant all privileges on DATABASE jrvstrading_test TO postgres;

@@ -23,26 +23,23 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static ca.jrvs.apps.trading.util.JsonUtil.toObjectFromJson;
-
 
 @Repository
 public class MarketDataDao {
-    private Logger logger = LoggerFactory.getLogger(MarketDataDao.class);
-
     private final String QUOTE_URL;
+    private Logger logger = LoggerFactory.getLogger(MarketDataDao.class);
     private HttpClientConnectionManager httpClientConnectionManager;
 
     @Autowired
-    public MarketDataDao(HttpClientConnectionManager httpClientConnectionManager, MarketDataConfig marketDataConfig){
-    //public MarketDataDao(HttpClientConnectionManager httpClientConnectionManager){
+    public MarketDataDao(HttpClientConnectionManager httpClientConnectionManager, MarketDataConfig marketDataConfig) {
+        //public MarketDataDao(HttpClientConnectionManager httpClientConnectionManager){
         this.httpClientConnectionManager = httpClientConnectionManager;
         QUOTE_URL = marketDataConfig.getHost() + "/stock/market/batch?symbols=%s&types=quote&token=" + marketDataConfig.getToken();
-    //    QUOTE_URL = "https://cloud.iexapis.com/stable/stock/market/batch?symbols=%s&types=quote&token=" + System.getenv("IEX_PUB_TOKEN");
+        //    QUOTE_URL = "https://cloud.iexapis.com/stable/stock/market/batch?symbols=%s&types=quote&token=" + System.getenv("IEX_PUB_TOKEN");
     }
 
 
-    public List<IexQuote> findIexQuoteByTicker(List<String> tickerList){
+    public List<IexQuote> findIexQuoteByTicker(List<String> tickerList) {
         List<String> batchSymbols = new ArrayList<>();
         batchSymbols.add("aapl");
 
@@ -72,7 +69,7 @@ public class MarketDataDao {
         return iexQuoteList;
     }
 
-    public IexQuote findIexQuoteByTicker(String ticker){
+    public IexQuote findIexQuoteByTicker(String ticker) {
         List<IexQuote> quotes = findIexQuoteByTicker(Arrays.asList(ticker));
 
         if (quotes == null || quotes.size() != 1)
@@ -82,10 +79,10 @@ public class MarketDataDao {
     }
 
     private String responseexcute(String url) {
-        try (CloseableHttpClient httpClient = getHttpClient()){
+        try (CloseableHttpClient httpClient = getHttpClient()) {
             HttpGet httpGet = new HttpGet(url);
             CloseableHttpResponse response = httpClient.execute(httpGet);
-            switch (response.getStatusLine().getStatusCode()){
+            switch (response.getStatusLine().getStatusCode()) {
                 case 200:
                     String body = EntityUtils.toString(response.getEntity());
                     return Optional.ofNullable(body).orElseThrow(() -> new IOException("Unexpected empty http response body"));
@@ -104,15 +101,15 @@ public class MarketDataDao {
 
             }
 
-        } catch (IOException e){
+        } catch (IOException e) {
             throw new DataRetrievalFailureException("Unable Http execution error: \n", e);
         }
 
 
     }
 
-    private CloseableHttpClient getHttpClient(){
-     return HttpClients.custom().setConnectionManager(httpClientConnectionManager).setConnectionManagerShared(true).build();
+    private CloseableHttpClient getHttpClient() {
+        return HttpClients.custom().setConnectionManager(httpClientConnectionManager).setConnectionManagerShared(true).build();
     }
 
 }

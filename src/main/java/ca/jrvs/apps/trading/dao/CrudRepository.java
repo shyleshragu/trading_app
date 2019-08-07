@@ -11,7 +11,7 @@ public interface CrudRepository<E, ID> {
      * @param entity must nore be {@literal null}.
      * @return the saved entity will never be {@literal null}.
      * @throws IllegalArgumentException if entity is invalid.
-     * @throws java.sql.SQLException if sql execution failed.
+     * @throws java.sql.SQLException    if sql execution failed.
      */
     E save(E entity);
 
@@ -20,7 +20,7 @@ public interface CrudRepository<E, ID> {
      *
      * @param id must not be {@literal null}.
      * @return the entity with the given id or null if none found.
-     * @throws java.sql.SQLException if sql execution failed.
+     * @throws java.sql.SQLException     if sql execution failed.
      * @throws ResourceNotFoundException if no entity is found in db.
      */
     E findById(ID id);
@@ -30,8 +30,8 @@ public interface CrudRepository<E, ID> {
      *
      * @param id must not be {@literal null}.
      * @return {@literal true} if an entity with the given id exists, {@literal false} otherwise.
-     * @throws IllegalArgumentException if {@code id} is {@literal null}.
-     * @throws java.sql.SQLException if sql excution failed.
+     * @throws IllegalArgumentException  if {@code id} is {@literal null}.
+     * @throws java.sql.SQLException     if sql excution failed.
      * @throws ResourceNotFoundException if no entity is found in db.
      */
     boolean existsById(ID id);
@@ -40,8 +40,8 @@ public interface CrudRepository<E, ID> {
      * Deletes the entity with the given id.
      *
      * @param id must not be {@literal null}.
-     * @throws IllegalArgumentException if {@code id} is {@literal null}.
-     * @throws java.sql.SQLException if sql execution failed
+     * @throws IllegalArgumentException  if {@code id} is {@literal null}.
+     * @throws java.sql.SQLException     if sql execution failed
      * @throws ResourceNotFoundException if no entity is found in db.
      */
     void deleteById(ID id);

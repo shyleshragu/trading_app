@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 
 @Repository
-public class TraderDao implements CrudRepository<Trader, Integer>{
+public class TraderDao implements CrudRepository<Trader, Integer> {
 
     private static Logger logger = LoggerFactory.getLogger(TraderDao.class);
 

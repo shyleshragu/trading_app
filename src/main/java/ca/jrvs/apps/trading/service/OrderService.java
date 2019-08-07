@@ -1,19 +1,17 @@
 package ca.jrvs.apps.trading.service;
 
-import ca.jrvs.apps.trading.dao.*;
+import ca.jrvs.apps.trading.dao.AccountDao;
+import ca.jrvs.apps.trading.dao.PositionDao;
+import ca.jrvs.apps.trading.dao.QuoteDao;
+import ca.jrvs.apps.trading.dao.SecurityOrderDao;
 import ca.jrvs.apps.trading.model.domain.*;
 import ca.jrvs.apps.trading.model.dto.MarketOrderDto;
-import java.sql.SQLException;
-
-import com.sun.org.apache.xpath.internal.operations.Quo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.xml.crypto.Data;
 
 @Service
 @Transactional
@@ -37,21 +35,21 @@ public class OrderService {
 
     /**
      * Execute a market order
-     *
+     * <p>
      * - validate the order (e.g. size, and ticker)
      * - Create a securityOrder (for security_order table)
      * - Handle buy or sell order
-     *   - buy order : check account balance
-     *   - sell order: check position for the ticker/symbol
-     *   - (please don't forget to update securityOrder.status)
+     * - buy order : check account balance
+     * - sell order: check position for the ticker/symbol
+     * - (please don't forget to update securityOrder.status)
      * - Save and return securityOrder
-     *
+     * <p>
      * NOTE: you will need to some helper methods (protected or private)
      *
      * @param orderDto market order
      * @return SecurityOrder from security_order table
      * @throws org.springframework.dao.DataAccessException if unable to get data from DAO
-     * @throws IllegalArgumentException for invalid input
+     * @throws IllegalArgumentException                    for invalid input
      */
     public SecurityOrder executeMarketOrder(MarketOrderDto orderDto) {
         if (orderDto.getSize() == null || orderDto.getTicker() == null)
@@ -77,11 +75,10 @@ public class OrderService {
 
             if (securityOrder.getSize() > 0) {
                 securityOrder.setStatus(buyOrder(account, quote, orderDto));
-            }
-            else {
+            } else {
                 securityOrder.setStatus(sellOrder(account, quote, orderDto));
             }
-        } catch (DataAccessException e){
+        } catch (DataAccessException e) {
             throw new IllegalArgumentException("Unable to retrieve data", e);
         }
 
@@ -96,8 +93,7 @@ public class OrderService {
             account.setAmount(account.getAmount() + cost);
             accountDao.updateAmountById(account.getId(), account.getAmount());
             return OrderStatus.FILLED;
-        }
-        else {
+        } else {
             return OrderStatus.CANCELED;
         }
     }
@@ -109,7 +105,7 @@ public class OrderService {
             account.setAmount(account.getAmount() - cost);
             accountDao.updateAmountById(account.getId(), account.getAmount());
             return OrderStatus.FILLED;
-        } else  {
+        } else {
             return OrderStatus.CANCELED;
         }
     }

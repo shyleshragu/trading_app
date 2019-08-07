@@ -18,17 +18,13 @@ import java.util.Arrays;
 import java.util.List;
 
 @Repository
-public class QuoteDao extends JdbcCrudDao<Quote, String>{
-    private static Logger logger = LoggerFactory.getLogger(QuoteDao.class);
-
+public class QuoteDao extends JdbcCrudDao<Quote, String> {
     private final static String sqlSelect = "SELECT * FROM ";
     private final static String sqlWhere = "WHERE ID = ?";
     private final static String sqlUpdate = "UPDATE ";
-
-
     private final static String TABLE_NAME = "quote";
     private final static String ID_NAME = "ticker";
-
+    private static Logger logger = LoggerFactory.getLogger(QuoteDao.class);
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
 
@@ -97,7 +93,7 @@ public class QuoteDao extends JdbcCrudDao<Quote, String>{
 
         List<Object[]> batch = new ArrayList<>();
         quotes.forEach(quote -> {
-            if (!existsById(quote.getTicker())){
+            if (!existsById(quote.getTicker())) {
                 throw new ResourceNotFoundException("ticker not found: " + quote.getTicker());
             }
             Object[] values = new Object[]{
@@ -112,7 +108,7 @@ public class QuoteDao extends JdbcCrudDao<Quote, String>{
     }
 
 
-    public List<Quote> findAll(){
+    public List<Quote> findAll() {
         String selectSql = sqlSelect + TABLE_NAME;
         List<Quote> quoteslist = jdbcTemplate.query(selectSql, BeanPropertyRowMapper.newInstance(Quote.class));
         return quoteslist;

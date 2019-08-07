@@ -3,7 +3,6 @@ package ca.jrvs.apps.trading.service;
 import ca.jrvs.apps.trading.dao.*;
 import ca.jrvs.apps.trading.model.domain.Account;
 import ca.jrvs.apps.trading.model.domain.Position;
-import ca.jrvs.apps.trading.model.domain.Trader;
 import ca.jrvs.apps.trading.model.view.PortfolioView;
 import ca.jrvs.apps.trading.model.view.TraderAccountView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.security.Security;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,8 +40,8 @@ public class DashboardService {
      * @param traderId trader ID
      * @return traderAccountView
      * @throws ca.jrvs.apps.trading.dao.ResourceNotFoundException if ticker is not found from IEX
-     * @throws org.springframework.dao.DataAccessException if unable to retrieve data
-     * @throws IllegalArgumentException for invalid input
+     * @throws org.springframework.dao.DataAccessException        if unable to retrieve data
+     * @throws IllegalArgumentException                           for invalid input
      */
     public TraderAccountView getTraderAccount(Integer traderId) {
         if (traderId == null || traderId <= 0)
@@ -58,9 +56,9 @@ public class DashboardService {
             traderAccountView.setAccount(accountDao.findByTraderId(traderId));
             traderAccountView.setTrader(traderDao.findById(traderId));
 
-        } catch (DataAccessException e){
+        } catch (DataAccessException e) {
             throw new IllegalArgumentException("Unable to retrieve data", e);
-        } catch (ResourceNotFoundException ex){
+        } catch (ResourceNotFoundException ex) {
             throw new ResourceNotFoundException("Unable to access account", ex);
         }
 
@@ -76,8 +74,8 @@ public class DashboardService {
      * @param traderId
      * @return portfolioView
      * @throws ca.jrvs.apps.trading.dao.ResourceNotFoundException if ticker is not found from IEX
-     * @throws org.springframework.dao.DataAccessException if unable to retrieve data
-     * @throws IllegalArgumentException for invalid input
+     * @throws org.springframework.dao.DataAccessException        if unable to retrieve data
+     * @throws IllegalArgumentException                           for invalid input
      */
     public PortfolioView getProfileViewByTraderId(Integer traderId) {
         if (traderId == null || traderId <= 0)
@@ -97,9 +95,9 @@ public class DashboardService {
             securityRow.setPosition((Position) positions);
             securityRow.setTicker(((Position) positions).getTicker());
             portfolioView.setSecurityRows(Collections.singletonList(securityRow));
-        } catch (DataAccessException e){
+        } catch (DataAccessException e) {
             throw new IllegalArgumentException("Unable to retrieve data", e);
-        } catch (ResourceNotFoundException ex){
+        } catch (ResourceNotFoundException ex) {
             throw new ResourceNotFoundException("Unable to access account", ex);
         }
 

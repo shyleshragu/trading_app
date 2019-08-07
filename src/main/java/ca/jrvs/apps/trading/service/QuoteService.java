@@ -6,7 +6,6 @@ import ca.jrvs.apps.trading.model.domain.IexQuote;
 import ca.jrvs.apps.trading.model.domain.Quote;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
@@ -33,7 +32,7 @@ public class QuoteService {
      * Note: `iexQuote.getLatestPrice() == null if the stock market is closed.
      * Make sure set a default value for number field(s).
      */
-    public static Quote buildQuoteFromIexQuote(IexQuote iexQuote){
+    public static Quote buildQuoteFromIexQuote(IexQuote iexQuote) {
         Quote quote = new Quote();
         quote.setTicker(iexQuote.getSymbol());
         quote.setLastPrice(
@@ -54,10 +53,10 @@ public class QuoteService {
      * - persist the quote to db
      *
      * @throws ca.jrvs.apps.trading.dao.ResourceNotFoundException if ticker is not found from IEX
-     * @throws org.springframework.dao.DataAccessException if unable to retrieve data
-     * @throws IllegalArgumentException for invalid input
+     * @throws org.springframework.dao.DataAccessException        if unable to retrieve data
+     * @throws IllegalArgumentException                           for invalid input
      */
-    public void initQuotes(List<String> tickers){
+    public void initQuotes(List<String> tickers) {
         List<IexQuote> securityList = tickers.stream().map(marketDataDao::findIexQuoteByTicker)
                 .collect(Collectors.toList());
         List<Quote> quotes = securityList.stream().map(QuoteService::buildQuoteFromIexQuote)
@@ -74,10 +73,10 @@ public class QuoteService {
      * Add a new ticker to the quote table. Skip existing ticker.
      *
      * @throws ca.jrvs.apps.trading.dao.ResourceNotFoundException if ticker is not found from IEX
-     * @throws org.springframework.dao.DataAccessException if unable to retrieve data
-     * @throws IllegalArgumentException for invalid input
+     * @throws org.springframework.dao.DataAccessException        if unable to retrieve data
+     * @throws IllegalArgumentException                           for invalid input
      */
-    public void initQuote(String ticker){
+    public void initQuote(String ticker) {
         initQuotes(Collections.singletonList(ticker));
     }
 
@@ -88,8 +87,8 @@ public class QuoteService {
      * - persist quote to db
      *
      * @throws ca.jrvs.apps.trading.dao.ResourceNotFoundException if ticker is not found from IEX
-     * @throws org.springframework.dao.DataAccessException if unable to retrieve data
-     * @throws IllegalArgumentException for invalid input
+     * @throws org.springframework.dao.DataAccessException        if unable to retrieve data
+     * @throws IllegalArgumentException                           for invalid input
      */
     public void updateMarketData() throws IOException {
         List<Quote> quotes = quoteDao.findAll();

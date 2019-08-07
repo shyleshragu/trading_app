@@ -14,9 +14,13 @@ public abstract class JdbcCrudDao<E extends Entity, ID> implements CrudRepositor
     private static Logger logger = LoggerFactory.getLogger(AccountDao.class);
 
     abstract public JdbcTemplate getJdbcTemplate();
+
     abstract public SimpleJdbcInsert getSimpleJdbcInsert();
+
     abstract public String getTableName();
+
     abstract public String getIdName();
+
     abstract Class getEntityClass();
 
 
@@ -36,19 +40,19 @@ public abstract class JdbcCrudDao<E extends Entity, ID> implements CrudRepositor
         return findById(getIdName(), id, false, getEntityClass());
     }
 
-    public E findByIdForUpdate(ID id){
+    public E findByIdForUpdate(ID id) {
         return findById(getIdName(), id, true, getEntityClass());
     }
 
     /**
      * @param id must not be {@literal null}.
      * @return entity
-     * @throws IllegalArgumentException if id is {@literal null}
-     * @throws java.sql.SQLException if sql execution failed
+     * @throws IllegalArgumentException  if id is {@literal null}
+     * @throws java.sql.SQLException     if sql execution failed
      * @throws ResourceNotFoundException if no entity is found in db
      */
     @SuppressWarnings("Unchecked")
-    public E findById(String idName, ID id, boolean forUpdate, Class clazz){
+    public E findById(String idName, ID id, boolean forUpdate, Class clazz) {
         E t = null;
         String selectSql = "SELECT * FROM " + getTableName() + " WHERE " + idName + " =?";
 
@@ -59,7 +63,7 @@ public abstract class JdbcCrudDao<E extends Entity, ID> implements CrudRepositor
 
         try {
             t = (E) getJdbcTemplate().queryForObject(selectSql, BeanPropertyRowMapper.newInstance(clazz), id);
-        } catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             logger.debug("Cannot find trader id: " + id, e);
         }
 
@@ -76,8 +80,8 @@ public abstract class JdbcCrudDao<E extends Entity, ID> implements CrudRepositor
         return existsById(getIdName(), id);
     }
 
-    public boolean existsById(String idName, ID id){
-        if (id == null){
+    public boolean existsById(String idName, ID id) {
+        if (id == null) {
             throw new IllegalArgumentException("ID cannot be null");
         }
         String selectSql = "SELECT COUNT(*) FROM " + getTableName() + "WHERE " + idName + " =?";
@@ -93,7 +97,7 @@ public abstract class JdbcCrudDao<E extends Entity, ID> implements CrudRepositor
         deleteById(getIdName(), id);
     }
 
-    public void deleteById(String idName, ID id){
+    public void deleteById(String idName, ID id) {
         if (id == null)
             throw new IllegalArgumentException("ID cannot be null");
 

@@ -1,8 +1,6 @@
 package ca.jrvs.apps.trading.dao;
 
 
-import javax.sql.DataSource;
-
 import ca.jrvs.apps.trading.model.domain.Account;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +9,8 @@ import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+
+import javax.sql.DataSource;
 
 @Repository
 public class AccountDao extends JdbcCrudDao<Account, Integer> {

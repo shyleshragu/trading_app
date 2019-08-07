@@ -9,7 +9,6 @@ import ca.jrvs.apps.trading.model.domain.Trader;
 import ca.jrvs.apps.trading.model.view.TraderAccountView;
 import ca.jrvs.apps.trading.service.FundTransferService;
 import ca.jrvs.apps.trading.service.RegisterService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +33,7 @@ public class TraderController {
         this.positionDao = positionDao;
     }
 
-    @PostMapping(path="/")
+    @PostMapping(path = "/")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public TraderAccountView createTrader(@RequestBody Trader trader) {
@@ -48,7 +47,7 @@ public class TraderController {
     @PutMapping(path = "/deposit/traderId/{traderId}/amount/{amount}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Account depositToAccount(@PathVariable Integer traderId, @PathVariable Double amount){
+    public Account depositToAccount(@PathVariable Integer traderId, @PathVariable Double amount) {
         try {
             return fundTransferService.deposit(traderId, amount);
         } catch (Exception e) {
@@ -59,7 +58,7 @@ public class TraderController {
     @PutMapping(path = "/withdraw/traderId/{traderId}/amount/{amount}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Account withdrawFromAccount(@PathVariable Integer traderId, @PathVariable Double amount){
+    public Account withdrawFromAccount(@PathVariable Integer traderId, @PathVariable Double amount) {
         try {
             return fundTransferService.withdraw(traderId, amount);
         } catch (Exception e) {
@@ -69,7 +68,7 @@ public class TraderController {
 
     @DeleteMapping(path = "/traderId/{traderId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteTrader(@PathVariable Integer traderId){
+    public void deleteTrader(@PathVariable Integer traderId) {
         try {
             registerService.deleteTraderById(traderId);
         } catch (Exception e) {
