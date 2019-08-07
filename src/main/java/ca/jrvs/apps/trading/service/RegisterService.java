@@ -52,11 +52,10 @@ public class RegisterService {
         Trader newTrader;
         TraderAccountView traderAccountView;
 
-
         try {
             newTrader = traderDao.save(trader);
 
-            account.setAmount(0);
+            account.setAmount(0.0);
             account.setTraderId(newTrader.getId());
             account.setId(newTrader.getId());
             accountDao.save(account);
