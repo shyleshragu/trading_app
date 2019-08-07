@@ -63,4 +63,6 @@ public class TraderDao implements CrudRepository<Trader, Integer>{
     public void deleteById(Integer integer) {
 
     }
+
+
 }

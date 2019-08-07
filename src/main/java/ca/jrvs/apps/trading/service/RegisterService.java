@@ -1,16 +1,17 @@
 package ca.jrvs.apps.trading.service;
 
-import ca.jrvs.apps.trading.dao.AccountDao;
-import ca.jrvs.apps.trading.dao.PositionDao;
-import ca.jrvs.apps.trading.dao.SecurityOrderDao;
-import ca.jrvs.apps.trading.dao.TraderDao;
+import ca.jrvs.apps.trading.dao.*;
 import ca.jrvs.apps.trading.model.domain.Account;
 import ca.jrvs.apps.trading.model.domain.Position;
 import ca.jrvs.apps.trading.model.domain.Trader;
 import ca.jrvs.apps.trading.model.view.TraderAccountView;
 import ca.jrvs.apps.trading.util.StringUtil;
+import java.lang.reflect.Parameter;
 import java.util.List;
+
+import org.apache.tomcat.util.http.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -44,7 +45,30 @@ public class RegisterService {
      * @throws IllegalArgumentException for invalid input
      */
     public TraderAccountView createTraderAndAccount(Trader trader) {
-        return null;
+        if (trader == null)
+            throw new IllegalArgumentException("Invalid trader. Null cannot be passed");
+
+        Account account = new Account();
+        Trader newTrader;
+        TraderAccountView traderAccountView;
+
+
+        try {
+            newTrader = traderDao.save(trader);
+
+            account.setAmount(0);
+            account.setTraderId(newTrader.getId());
+            account.setId(newTrader.getId());
+            accountDao.save(account);
+
+            traderAccountView = new TraderAccountView();
+            traderAccountView.setTrader(newTrader);
+            traderAccountView.setAccount(account);
+        } catch (DataAccessException e){
+            throw new ResourceNotFoundException("Create trader failure", e);
+        }
+
+        return traderAccountView;
     }
 
     /**
@@ -60,7 +84,26 @@ public class RegisterService {
      * @throws IllegalArgumentException for invalid input
      */
     public void deleteTraderById(Integer traderId) {
+        if (traderId == null)
+            throw new IllegalArgumentException("TraderId cannot be null");
 
+        if (!traderDao.existsById(traderId))
+            throw new IllegalArgumentException("TraderId does not exist");
+
+        Account account = accountDao.findByTraderId(traderId);
+        if (account.getAmount() != 0)
+            throw new IllegalArgumentException("Cannot delete Trader account. Trader has an non-zero amount entry");
+
+        List<Position> position2 = positionDao.findByAccount(account.getId());
+
+        position2.forEach(position1 -> {
+            if (position1.getPosition() != 0)
+                throw new IllegalArgumentException("Trader has non-zero position. Trader cannot be deleted");
+        });
+
+        securityOrderDao.deleteById(account.getId());
+        accountDao.deleteById(account.getId());
+        traderDao.deleteById(traderId);
     }
 
 }
