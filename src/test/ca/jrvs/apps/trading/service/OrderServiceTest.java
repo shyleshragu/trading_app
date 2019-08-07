@@ -75,13 +75,25 @@ public class OrderServiceTest {
         account.setAmount(1000.0);
         accounts.add(account);
 
+    }
+
+    public void sellOrderMocker(){
         securityOrder = new SecurityOrder();
         securityOrder.setTicker("AAPL");
         securityOrder.setAccountId(1);
         securityOrder.setSize(100);
         securityOrder.setStatus(OrderStatus.PENDING);
-
     }
+
+    public void buyOrderMocker(){
+        securityOrder = new SecurityOrder();
+        securityOrder.setTicker("AAPL");
+        securityOrder.setAccountId(1);
+        securityOrder.setSize(0);
+        securityOrder.setStatus(OrderStatus.PENDING);
+    }
+
+
 
     public void whenMocker(){
         when(quoteDao.existsById(orderDto.getTicker())).thenReturn(true);
@@ -91,7 +103,8 @@ public class OrderServiceTest {
     }
 
     @Test
-    public void executeMarketOrderHappyPath() {
+    public void executeMarketOrderHappyPath_Sell() {
+        sellOrderMocker();
         orderDto = new MarketOrderDto(account.getTraderId(), position.getTicker(), position.getPosition());
         orderDto.setAccountId(1);
         orderDto.setSize(1);
@@ -105,7 +118,8 @@ public class OrderServiceTest {
     }
 
     @Test
-    public void executeMarketOrderSadPath() {
+    public void executeMarketOrderSadPath_Sell() {
+        sellOrderMocker();
         orderDto = new MarketOrderDto(account.getTraderId(), position.getTicker(), position.getPosition());
         orderDto.setAccountId(2);
         orderDto.setSize(101); //MarkerOrderDto size greater than position size
@@ -117,5 +131,36 @@ public class OrderServiceTest {
         SecurityOrder captorOrder = captorSecurityOrder.getValue();
         assertEquals(OrderStatus.CANCELED, captorOrder.getStatus());
     }
+
+    @Test
+    public void executeMarketOrderHappyPath_Buy() {
+        buyOrderMocker();
+        orderDto = new MarketOrderDto(account.getTraderId(), position.getTicker(), position.getPosition());
+        orderDto.setAccountId(1);
+        orderDto.setSize(1);
+        orderDto.setTicker("AAPL");
+        whenMocker();
+
+        orderService.executeMarketOrder(orderDto);
+        verify(securityOrderDao).save(captorSecurityOrder.capture());
+        SecurityOrder captorOrder = captorSecurityOrder.getValue();
+        assertEquals(OrderStatus.FILLED, captorOrder.getStatus());
+    }
+
+    @Test
+    public void executeMarketOrderSadPath_Buy() {
+        buyOrderMocker();
+        orderDto = new MarketOrderDto(account.getTraderId(), position.getTicker(), position.getPosition());
+        orderDto.setAccountId(2);
+        orderDto.setSize(101); //MarkerOrderDto size greater than position size
+        orderDto.setTicker("AAPL");
+        whenMocker();
+
+        orderService.executeMarketOrder(orderDto);
+        verify(securityOrderDao).save(captorSecurityOrder.capture());
+        SecurityOrder captorOrder = captorSecurityOrder.getValue();
+        assertEquals(OrderStatus.CANCELED, captorOrder.getStatus());
+    }
+
 
 }
