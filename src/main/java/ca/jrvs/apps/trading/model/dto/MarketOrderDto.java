@@ -12,6 +12,12 @@ public class MarketOrderDto {
         this.size = size;
     }
 
+    public MarketOrderDto(Integer accountId, Integer ticker, Integer size){
+        this.accountId = accountId;
+        this.ticker = ticker.toString();
+        this.size = size;
+    }
+
     public Integer getAccountId() {
         return accountId;
     }

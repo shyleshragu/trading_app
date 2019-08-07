@@ -11,6 +11,19 @@ public class SecurityOrder implements Entity<Integer> {
     private Double price;
     private String notes;
 
+    public SecurityOrder(Integer id, Integer accountId, OrderStatus status, String ticker, Integer size, Double price, String notes) {
+        this.id = id;
+        this.accountId = accountId;
+        this.status = status;
+        this.ticker = ticker;
+        this.size = size;
+        this.price = price;
+        this.notes = notes;
+    }
+
+    public SecurityOrder() {
+    }
+
     @Override
     public Integer getId() {
         return id;
