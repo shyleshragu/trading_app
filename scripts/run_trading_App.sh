@@ -9,6 +9,7 @@ if [ "$#" -ne 5 ]; then
     exit 1
 fi
 
+#export variables
 export SPRING_PROFILES_ACTIVE=$1
 export PSQL_HOST=$2
 export PSQL_USER=$3
