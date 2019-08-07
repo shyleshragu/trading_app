@@ -1,15 +1,19 @@
 package ca.jrvs.apps.trading.service;
 
-import ca.jrvs.apps.trading.dao.AccountDao;
-import ca.jrvs.apps.trading.dao.PositionDao;
-import ca.jrvs.apps.trading.dao.QuoteDao;
-import ca.jrvs.apps.trading.dao.TraderDao;
+import ca.jrvs.apps.trading.dao.*;
+import ca.jrvs.apps.trading.model.domain.Account;
+import ca.jrvs.apps.trading.model.domain.Position;
+import ca.jrvs.apps.trading.model.domain.Trader;
 import ca.jrvs.apps.trading.model.view.PortfolioView;
 import ca.jrvs.apps.trading.model.view.TraderAccountView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.security.Security;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 @Transactional
@@ -17,16 +21,16 @@ public class DashboardService {
 
     private TraderDao traderDao;
     private PositionDao positionDao;
+    private SecurityOrderDao securityOrderDao;
     private AccountDao accountDao;
-    private QuoteDao quoteDao;
+
 
     @Autowired
-    public DashboardService(TraderDao traderDao, PositionDao positionDao, AccountDao accountDao,
-                            QuoteDao quoteDao) {
+    public DashboardService(TraderDao traderDao, PositionDao positionDao, SecurityOrderDao securityOrderDao, AccountDao accountDao) {
         this.traderDao = traderDao;
         this.positionDao = positionDao;
+        this.securityOrderDao = securityOrderDao;
         this.accountDao = accountDao;
-        this.quoteDao = quoteDao;
     }
 
     /**
@@ -42,7 +46,25 @@ public class DashboardService {
      * @throws IllegalArgumentException for invalid input
      */
     public TraderAccountView getTraderAccount(Integer traderId) {
-        return null;
+        if (traderId == null || traderId <= 0)
+            throw new IllegalArgumentException("Invalid traderId");
+
+        if (!accountDao.existsById(traderId))
+            throw new IllegalArgumentException("Trader does not exist");
+
+        TraderAccountView traderAccountView = new TraderAccountView();
+
+        try {
+            traderAccountView.setAccount(accountDao.findByTraderId(traderId));
+            traderAccountView.setTrader(traderDao.findById(traderId));
+
+        } catch (DataAccessException e){
+            throw new IllegalArgumentException("Unable to retrieve data", e);
+        } catch (ResourceNotFoundException ex){
+            throw new ResourceNotFoundException("Unable to access account", ex);
+        }
+
+        return traderAccountView;
     }
 
     /**
@@ -58,7 +80,30 @@ public class DashboardService {
      * @throws IllegalArgumentException for invalid input
      */
     public PortfolioView getProfileViewByTraderId(Integer traderId) {
-        return null;
+        if (traderId == null || traderId <= 0)
+            throw new IllegalArgumentException("Invalid traderId");
+
+        if (!accountDao.existsById(traderId))
+            throw new IllegalArgumentException("Trader does not exist");
+
+        PortfolioView portfolioView = new PortfolioView();
+        Account account;
+        List<Position> positions;
+        PortfolioView.SecurityRow securityRow = new PortfolioView.SecurityRow();
+
+        try {
+            account = accountDao.findByTraderId(traderId);
+            positions = positionDao.findByAccount(account.getId());
+            securityRow.setPosition((Position) positions);
+            securityRow.setTicker(((Position) positions).getTicker());
+            portfolioView.setSecurityRows(Collections.singletonList(securityRow));
+        } catch (DataAccessException e){
+            throw new IllegalArgumentException("Unable to retrieve data", e);
+        } catch (ResourceNotFoundException ex){
+            throw new ResourceNotFoundException("Unable to access account", ex);
+        }
+
+        return portfolioView;
     }
 }
 
