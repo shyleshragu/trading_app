@@ -1,8 +1,10 @@
 package ca.jrvs.apps.trading.service;
 
 import ca.jrvs.apps.trading.dao.AccountDao;
+import ca.jrvs.apps.trading.dao.ResourceNotFoundException;
 import ca.jrvs.apps.trading.model.domain.Account;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +33,28 @@ public class FundTransferService {
      * @throws IllegalArgumentException for invalid input
      */
     public Account deposit(Integer traderId, Double fund) {
-        return null;
+        if (traderId == null || traderId <= 0 || fund == null || fund <= 0)
+            throw new IllegalArgumentException("Invalid traderId or fund");
+
+        if (!accountDao.existsById(traderId))
+            throw new IllegalArgumentException("trader does not exist");
+
+        Account account;
+        Double amount;
+
+        try {
+            account = accountDao.findByTraderId(traderId);
+            amount = account.getAmount() + fund;
+
+            account.setAmount(amount);
+            accountDao.updateAmountById(account.getId(), amount);
+        } catch (DataAccessException e){
+            throw new IllegalArgumentException("Unable to retrieve data", e);
+        } catch (ResourceNotFoundException ex){
+            throw new ResourceNotFoundException("Unable to access account", ex);
+        }
+
+        return account;
     }
 
     /**
@@ -49,7 +72,27 @@ public class FundTransferService {
      * @throws IllegalArgumentException for invalid input
      */
     public Account withdraw(Integer traderId, Double fund) {
-        return null;
+        if (traderId == null || traderId <= 0 || fund == null || fund <= 0)
+            throw new IllegalArgumentException("Invalid traderId or fund");
+
+        if (!accountDao.existsById(traderId))
+            throw new IllegalArgumentException("trader does not exist");
+
+        Account account;
+        Double amount;
+
+        try {
+            account = accountDao.findByTraderId(traderId);
+            amount = account.getAmount() - fund;
+
+            account.setAmount(amount);
+            accountDao.updateAmountById(account.getId(), amount);
+        } catch (DataAccessException e){
+            throw new IllegalArgumentException("Unable to retrieve data", e);
+        } catch (ResourceNotFoundException ex){
+            throw new ResourceNotFoundException("Unable to access account", ex);
+        }
+        return account;
     }
 }
 

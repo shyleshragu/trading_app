@@ -17,7 +17,7 @@ public class Account implements Entity<Integer> {
     @JsonProperty("traderId")
     private Integer traderId;
     @JsonProperty("amount")
-    private Integer amount;
+    private Double amount;
 
     @JsonProperty("id")
     public Integer getId() {
@@ -40,12 +40,12 @@ public class Account implements Entity<Integer> {
     }
 
     @JsonProperty("amount")
-    public Integer getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
     @JsonProperty("amount")
-    public void setAmount(Integer amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
