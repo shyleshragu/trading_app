@@ -139,9 +139,7 @@ Endpoints:
 
 ## Architecture
 
-q
-
-q
+![Architecture Diagram](https://github.com/shyleshragun/trading_app/blob/master/assets/architecture.JPG)
 
 ### Logical Layers:
 
