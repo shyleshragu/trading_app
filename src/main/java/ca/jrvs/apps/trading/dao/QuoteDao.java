@@ -67,29 +67,10 @@ public class QuoteDao extends JdbcCrudDao<Quote, String> {
         return entity;
     }
 
-
-    /*public Quote findById(String id) {
-        return super.findById("trader_id", id, false, getEntityClass());
-    }
-
-
-    public Quote findByIdForUpdate(String id) {
-        return super.findById("trader_id", id, true, getEntityClass());
-    }
-
-    @Override
-    public boolean existsById(String id) {
-        return super.existsById(id);
-    }
-
-    @Override
-    public void deleteById(String id) {
-        super.deleteById(id);
-    }*/
-
     public void update(List<Quote> quotes) {
+        if (quotes.isEmpty())
+            throw new IllegalArgumentException("Error:Empty quotes");
         String query = sqlUpdate + TABLE_NAME + "SET last_price=?, bid_price=?, bid_size=?, ask_price=?, ask_size=? WHERE ticker=?";
-        //List<Quote> quotes1 = findAll();
 
         List<Object[]> batch = new ArrayList<>();
         quotes.forEach(quote -> {

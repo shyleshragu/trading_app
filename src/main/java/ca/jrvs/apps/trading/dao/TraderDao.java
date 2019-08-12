@@ -13,9 +13,10 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.time.LocalDate;
 
 @Repository
-public class TraderDao implements CrudRepository<Trader, Integer> {
+public class TraderDao extends JdbcCrudDao<Trader, Integer> {
 
     private static Logger logger = LoggerFactory.getLogger(TraderDao.class);
 
@@ -30,39 +31,39 @@ public class TraderDao implements CrudRepository<Trader, Integer> {
         this.simpleInsert = new SimpleJdbcInsert(dataSource).withTableName(TABLE_NAME).usingGeneratedKeyColumns(ID_COLUMN);
     }
 
+
     @Override
-    public Trader save(Trader entity) {
-        SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(entity);
-        Number newId = simpleInsert.executeAndReturnKey(parameterSource);
-        entity.setId(newId.intValue());
-        return entity;
+    public JdbcTemplate getJdbcTemplate() {
+        return jdbcTemplate;
     }
 
     @Override
-    public Trader findById(Integer integer) {
-        if (integer == null) {
-            throw new IllegalArgumentException("ID can't be null");
-        }
-        Trader trader = null;
-        try {
-            trader = jdbcTemplate
-                    .queryForObject("select * from " + TABLE_NAME + " where id = ?",
-                            BeanPropertyRowMapper.newInstance(Trader.class), integer);
-        } catch (EmptyResultDataAccessException e) {
-            logger.debug("Can't find trader id:" + integer, e);
-        }
+    public SimpleJdbcInsert getSimpleJdbcInsert() {
+        return simpleInsert;
+    }
+
+    @Override
+    public String getTableName() {
+        return TABLE_NAME;
+    }
+
+    @Override
+    public String getIdName() {
+        return ID_COLUMN;
+    }
+
+    @Override
+    Class getEntityClass() {
+        return Trader.class;
+    }
+
+    public Trader createTrader(String firstname, String lastname, String dob, String country, String email) {
+        Trader trader = new Trader();
+        trader.setFirstName(firstname);
+        trader.setLastName(lastname);
+        trader.setDob(LocalDate.parse(dob));
+        trader.setCountry(country);
+        trader.setEmail(email);
         return trader;
     }
-
-    @Override
-    public boolean existsById(Integer integer) {
-        return false;
-    }
-
-    @Override
-    public void deleteById(Integer integer) {
-
-    }
-
-
 }

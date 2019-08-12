@@ -7,13 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.List;
 
-
+@Repository
 public class PositionDao {
-    private static final Logger logger = LoggerFactory.getLogger(QuoteDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(Position.class);
 
     private final String TABLE_NAME = "position";
     private final String ID_NAME = "account_id";
