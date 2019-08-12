@@ -15,10 +15,10 @@ import java.time.LocalDate;
         "country",
         "email"
 })
-public class Trader implements Entity {
+public class Trader implements Entity<Integer> {
 
     @JsonProperty("id")
-    private int id;
+    private Integer id;
     @JsonProperty("firstName")
     private String firstName;
     @JsonProperty("lastName")
@@ -31,12 +31,13 @@ public class Trader implements Entity {
     private String email;
 
     @JsonProperty("id")
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
+
     @JsonProperty("id")
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
