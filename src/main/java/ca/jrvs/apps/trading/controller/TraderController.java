@@ -9,6 +9,7 @@ import ca.jrvs.apps.trading.model.domain.Trader;
 import ca.jrvs.apps.trading.model.view.TraderAccountView;
 import ca.jrvs.apps.trading.service.FundTransferService;
 import ca.jrvs.apps.trading.service.RegisterService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,7 @@ public class TraderController {
     private SecurityOrderDao securityOrderDao;
     private PositionDao positionDao;
 
+    @Autowired
     public TraderController(FundTransferService fundTransferService, RegisterService registerService, TraderDao traderDao, AccountDao accountDao, SecurityOrderDao securityOrderDao, PositionDao positionDao) {
         this.fundTransferService = fundTransferService;
         this.registerService = registerService;
