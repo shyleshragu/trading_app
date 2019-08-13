@@ -4,11 +4,14 @@ import ca.jrvs.apps.trading.dao.MarketDataDao;
 import ca.jrvs.apps.trading.dao.QuoteDao;
 import ca.jrvs.apps.trading.model.domain.IexQuote;
 import ca.jrvs.apps.trading.model.domain.Quote;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +20,7 @@ import java.util.stream.Collectors;
 @Transactional
 @Service
 public class QuoteService {
-
+    private static final Logger logger = LoggerFactory.getLogger(QuoteService.class);
     private QuoteDao quoteDao;
     private MarketDataDao marketDataDao;
 
@@ -33,16 +36,18 @@ public class QuoteService {
      * Make sure set a default value for number field(s).
      */
     public static Quote buildQuoteFromIexQuote(IexQuote iexQuote) {
+        if (iexQuote == null)
+            throw new IllegalArgumentException("Error: iexQuote is empty");
+
         Quote quote = new Quote();
+
+        quote.setAskPrice(Double.parseDouble(iexQuote.getIexAskPrice()));
+        quote.setAskSize(Integer.parseInt(iexQuote.getIexAskSize()));
+        quote.setBidPrice(Double.parseDouble(iexQuote.getIexBidPrice()));
+        quote.setBidSize(Integer.parseInt(iexQuote.getIexBidSize()));
+        quote.setLastPrice(Double.parseDouble(iexQuote.getLatestPrice()));
         quote.setTicker(iexQuote.getSymbol());
-        quote.setLastPrice(
-                Double.parseDouble(Optional.ofNullable(iexQuote.getLatestPrice()).orElse("0")));
-        quote.setAskPrice(
-                Double.parseDouble(Optional.ofNullable(iexQuote.getIexAskPrice()).orElse("0")));
-        quote.setBidPrice(
-                Double.parseDouble(Optional.ofNullable(iexQuote.getIexBidPrice()).orElse("0")));
-        quote.setBidSize(Integer.parseInt(Optional.ofNullable(iexQuote.getIexBidSize()).orElse("0")));
-        quote.setAskSize(Integer.parseInt(Optional.ofNullable(iexQuote.getIexAskSize()).orElse("0")));
+
         return quote;
     }
 
@@ -57,14 +62,14 @@ public class QuoteService {
      * @throws IllegalArgumentException                           for invalid input
      */
     public void initQuotes(List<String> tickers) {
-        List<IexQuote> securityList = tickers.stream().map(marketDataDao::findIexQuoteByTicker)
-                .collect(Collectors.toList());
-        List<Quote> quotes = securityList.stream().map(QuoteService::buildQuoteFromIexQuote)
-                .collect(Collectors.toList());
+        List<IexQuote> iexQuotes = marketDataDao.findIexQuoteByTicker(tickers);
+        List<Quote> quotes = new ArrayList<>();
 
+        int i=0;
         quotes.forEach(quote -> {
-            if (!quoteDao.existsById(quote.getId())) {
-                quoteDao.save(quote);
+            if (!quoteDao.existsById(iexQuotes.get(i).getSymbol())) {
+                quotes.add(buildQuoteFromIexQuote(iexQuotes.get(i)));
+                quoteDao.save(quotes.get(i));
             }
         });
     }
@@ -92,10 +97,23 @@ public class QuoteService {
      */
     public void updateMarketData() throws IOException {
         List<Quote> quotes = quoteDao.findAll();
-        List<String> tickers = quotes.stream().map(Quote::getTicker).collect(Collectors.toList());
-        List<IexQuote> iexQuotes = marketDataDao.findIexQuoteByTicker(tickers);
-        List<Quote> updateQuotes = iexQuotes.stream().map(QuoteService::buildQuoteFromIexQuote)
-                .collect(Collectors.toList());
+        List<IexQuote> iexQuotes = new ArrayList<>();
+        List<Quote> updateQuotes = new ArrayList<>();
+
+        for (Quote quote : quotes) {
+            iexQuotes.add(marketDataDao.findIexQuoteByTicker(quote.getTicker()));
+        }
+        for (IexQuote iexQuote : iexQuotes) {
+            updateQuotes.add(buildQuoteFromIexQuote(iexQuote));
+        }
         quoteDao.update(updateQuotes);
+    }
+
+    public void updateQuote(Quote quote) {
+        if (quote == null)
+            throw new IllegalArgumentException("Error: Parameter is empty");
+
+        quote.setTicker(quote.getTicker().toUpperCase());
+        quoteDao.update(Collections.singletonList(quote));
     }
 }
