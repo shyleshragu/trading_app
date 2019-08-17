@@ -11,5 +11,12 @@
         <include>trading-1.0-SNAPSHOT.jar</include>
       </includes>
     </fileSet>
+    <fileSet>
+      <directory>SQL-Scripts</directory>
+      <outputDirectory>/sql</outputDirectory>
+      <includes>
+        <include>*.sql</include>
+      </includes>
+    </fileSet>
   </fileSets>
 </assembly>

@@ -17,13 +17,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 
 @Configuration
-@EnableTransactionManagement
 public class AppConfig {
 
     private Logger logger = LoggerFactory.getLogger(AppConfig.class);
 
-    @Value("${iex.host}")
-    private String iex_host;
+    private String iex_host = System.getenv("IEX_HOST");
 
     @Bean
     public PlatformTransactionManager txManager(DataSource dataSource) {
@@ -60,9 +58,8 @@ public class AppConfig {
             jdbcUrl = System.getenv("PSQL_URL");
             user = System.getenv("PSQL_USER");
             password = System.getenv("PSQL_PASSWORD");
+            logger.error("JDBC:" + jdbcUrl);
         }
-
-        logger.error("JDBC:" + jdbcUrl);
 
         if (StringUtil.isEmpty(jdbcUrl, user, password)) {
             throw new IllegalArgumentException("Missing data source config env vars");

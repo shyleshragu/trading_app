@@ -27,9 +27,6 @@ public class Application implements CommandLineRunner {
     @Value("aapl, msft, amzn, fb")
     private String[] initDailyList;
 
-    @Autowired
-    private QuoteService quoteService;
-
     public static void main(String[] args) throws Exception {
         SpringApplication app = new SpringApplication(Application.class);
         //turn off web
@@ -39,8 +36,8 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws IOException {
-        quoteService.initQuotes(Arrays.asList(initDailyList));
-        quoteService.updateMarketData();
+        //quoteService.initQuotes(Arrays.asList(initDailyList));
+        //quoteService.updateMarketData();
     }
 
 }
