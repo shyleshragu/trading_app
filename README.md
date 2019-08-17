@@ -41,6 +41,7 @@ Several microservices were used in order to implement the application:
   - PSQL_HOST - name of PSQL database.
   - PSQL_USER - username to access database.
   - PSQL_PASSWORD - password to access database.
+  - IEX_HOST - IEX host address (https://cloud.iexapis.com/v1)
 
 - The application was designed to use Swagger-UI to interact with the application. The link used to access the Swagger-UI page whenever the application was properly executed was: http://localhost:5000/swagger-ui.html
 
