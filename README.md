@@ -42,21 +42,19 @@ Several microservices were used in order to implement the application:
   - PSQL_USER - username to access database.
   - PSQL_PASSWORD - password to access database.
 
-- The application was designed to use Swagger-UI to interact with the application. The link used to access the Swagger-UI page whenever the application was properly executed was: http://localhost:8080/swagger-ui.html
+- The application was designed to use Swagger-UI to interact with the application. The link used to access the Swagger-UI page whenever the application was properly executed was: http://localhost:5000/swagger-ui.html
 
-  q
+  ![Swagger-UI image](https://github.com/shyleshragun/trading_app/blob/master/assets/swagger.JPG)
 
-  q
+  
 
-  q
+  The application can also be viewed using Postman. A controller web-address was inputted in the **GET** url box: http://localhost:5000/health or http://localhost:5000/quote/iex/ticker/fb
 
-  The application can also be viewed using Postman. A controller web-address was inputted in the **GET** url box: http://localhost:8080/health
+  
 
-  q
-
-  q
-
-  q
+  | ![Postman image 1](https://github.com/shyleshragun/trading_app/blob/master/assets/Postman.JPG) | ![Postman image 2](https://github.com/shyleshragun/trading_app/blob/master/assets/Postman1.JPG) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+  | localhost:5000/health                                        | localhost:5000/quote/iex/ticker/fb                           |
 
   
 
