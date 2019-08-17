@@ -51,13 +51,10 @@ Several microservices were used in order to implement the application:
 
   The application can also be viewed using Postman. A controller web-address was inputted in the **GET** url box: http://localhost:5000/health or http://localhost:5000/quote/iex/ticker/fb
 
-  
+![Postman image 1](https://github.com/shyleshragun/trading_app/blob/master/assets/Postman.JPG) 
 
-  | ![Postman image 1](https://github.com/shyleshragun/trading_app/blob/master/assets/Postman.JPG) | ![Postman image 2](https://github.com/shyleshragun/trading_app/blob/master/assets/Postman1.JPG) |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-  |                                                              |                                                              |
+![Postman image 2](https://github.com/shyleshragun/trading_app/blob/master/assets/Postman1.JPG) 
 
-  
 
 ---
 
