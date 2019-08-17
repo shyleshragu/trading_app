@@ -54,7 +54,7 @@ Several microservices were used in order to implement the application:
 
   | ![Postman image 1](https://github.com/shyleshragun/trading_app/blob/master/assets/Postman.JPG) | ![Postman image 2](https://github.com/shyleshragun/trading_app/blob/master/assets/Postman1.JPG) |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
-  | localhost:5000/health                                        | localhost:5000/quote/iex/ticker/fb                           |
+  |                                                              |                                                              |
 
   
 
